@@ -9,4 +9,77 @@
 抽象工厂模式是指声明一个接口，用于创建一系类产品或者具有依赖关系的实例，而不需要明确具体类
 ![image](https://github.com/gupaocx/gupao-cx-study-design/blob/master/uml/factory/abstract/AuthFactory.png)
 
-# 二、原型模式
+# 二、单例模式
+## 饿汉式单例
+- 特点  
+类加载时就会实例化一个全局唯一的对象
+- 缺点  
+1. 正因为类加载的时候就会实例化一个全局唯一的对象，会造成资源浪费（因为可能用不到这个对象）
+## 懒汉式单例
+- 特点  
+与饿汉式相反，等到使用时才实例化对象
+- 缺点  
+1. 利用了synchronized保证只实例化一个对象，降低了性能
+## 静态内部类单例
+- 特点    
+1. 利用静态内部类只有类加载的时候，内部类才会被实例化的特性，来创建实例化对象
+2. 此种方法比较高效
+## 注册式单例
+- 特点  
+利用容器去存储（与spring中的单例是一致的）
+## ThreadLocal(线程内单例)
+- 特点  
+利用ThreadLocal来保证每个线程中的对象只有一个
+## 单例的破坏方式以及如何预防
+- 使用反射破坏单例  
+  - 使用反射方式强制实例化对象  
+  ~~~
+  Class<?> clazz = LazyInnerClassSingleton.class;
+  Constructor c = clazz.getDeclaredConstructor(null);
+  c.setAccessible(true);
+  Object o1 = c.newInstance();
+  Object o2 = c.newInstance();
+  System.out.println(o1 == o2);
+  ~~~
+  - 解决方法 无参构造中添加判断，并做异常处理 
+  ```
+  private LazyInnerClassSingleton(){
+      if(LazyHolder.LAZY != null){
+         throw new RuntimeException("不允许创建多个实例");
+      }
+  }
+  ```
+- 使用序列化破坏单例
+  - 使用序列化反序列化来实例化对象
+  ``` java
+  public class SeriableSingletonTest {
+      public static void main(String[] args) {
+          SeriableSingleton s1 = null;
+          SeriableSingleton s2 = SeriableSingleton.getInstance();
+          FileOutputStream fos = null;
+          try {
+              fos = new FileOutputStream("SeriableSingleton.obj");
+              ObjectOutputStream oos = new ObjectOutputStream(fos);
+              oos.writeObject(s2);
+              oos.flush();
+              oos.close();
+              FileInputStream fis = new FileInputStream("SeriableSingleton.obj");
+              ObjectInputStream ois = new ObjectInputStream(fis);
+              s1 = (SeriableSingleton)ois.readObject();
+              ois.close();
+              System.out.println(s1);
+              System.out.println(s2);
+              System.out.println(s1 == s2);
+          } catch (Exception e) {
+              e.printStackTrace();
+          }
+      }
+  }
+  ```
+  
+  - 解决方法(重写readResolve方法)
+  ```
+  private  Object readResolve(){
+      return  INSTANCE;
+  }
+  ```

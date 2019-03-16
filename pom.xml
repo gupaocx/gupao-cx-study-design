@@ -12,6 +12,8 @@
         <module>gupao-cx-study-design-factory</module>
         <module>gupao-cx-study-design-prototype</module>
         <module>gupao-cx-study-design-proxy</module>
+        <module>gupao-cx-study-design-singleton</module>
+        <module>gupao-cx-study-design-core</module>
     </modules>
     <properties>
         <junit.version>4.12</junit.version>
