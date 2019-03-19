@@ -14,6 +14,8 @@
         <module>gupao-cx-study-design-proxy</module>
         <module>gupao-cx-study-design-singleton</module>
         <module>gupao-cx-study-design-core</module>
+        <module>gupao-cx-study-desgin-delegate</module>
+        <module>gupao-cx-study-design-strategy</module>
     </modules>
     <properties>
         <junit.version>4.12</junit.version>
